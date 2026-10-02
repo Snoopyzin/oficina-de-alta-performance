@@ -1,10 +1,10 @@
 /* =========================================================
-   Página do administrador (admin.html): escolher qual link enviar
+   Página do administrador (index.html): escolher qual link enviar
    ========================================================= */
 
 const PAGINAS = [
   {
-    arquivo: "index.html",
+    arquivo: "diagnostico.html",
     titulo: "Formulário dos mentorados",
     tag: "Pode enviar",
     classe: "enviar",
