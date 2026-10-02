@@ -756,3 +756,17 @@ tr.linha:hover td { background: var(--sunk); }
 }
 
 a.btn { text-decoration: none; display: inline-block; }
+
+/* Envio do relatório ao mentorado */
+.envio {
+  margin-top: 18px;
+  padding: 16px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.envio small { color: var(--muted); }

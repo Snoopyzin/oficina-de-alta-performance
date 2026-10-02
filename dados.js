@@ -12,6 +12,8 @@ const SECOES=[
  {id:"empresa",t:"Identificação da empresa",curto:"Empresa",intro:"Dados básicos para conhecer a oficina, a estrutura física e o tipo de serviço que vocês fazem.",qs:[
   {id:"nome",tipo:"text",t:"Seu nome completo"},
   {id:"cargo",tipo:"text",t:"Seu cargo ou função na empresa"},
+  {id:"email",tipo:"text",t:"Seu e-mail",h:"Para onde enviaremos o relatório do seu diagnóstico."},
+  {id:"whatsapp",tipo:"text",t:"Seu WhatsApp com DDD",h:"Ex.: (11) 91234-5678. Também receberá o relatório por aqui."},
   {id:"empresa",tipo:"text",t:"Nome da oficina (nome fantasia)"},
   {id:"cidade",tipo:"text",t:"Cidade / Estado"},
   {id:"fundacao",tipo:"number",t:"Ano de fundação"},

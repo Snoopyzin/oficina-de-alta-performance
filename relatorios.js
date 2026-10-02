@@ -130,6 +130,63 @@ function renderPainel() {
     </div>`;
 }
 
+/** Texto do relatório que vai para o mentorado (e-mail e WhatsApp). */
+function relatorioTexto(r) {
+  const rs = r.respostas || {};
+  const nome = (r.nome || "").split(" ")[0] || "tudo bem";
+  const notas = AREAS_RADAR
+    .map(s => ({ area: s.curto, v: rs[s.id + ".nota"] }))
+    .filter(x => typeof x.v === "number");
+  const media = notas.length ? notas.reduce((a, x) => a + x.v, 0) / notas.length : null;
+  const atencao = notas.filter(x => x.v < 4).map(x => x.area);
+  const fortes = notas.filter(x => x.v >= 7).map(x => x.area);
+
+  const linhas = [
+    `Olá, ${nome}! Segue o resumo do seu Diagnóstico 360° da ${r.empresa || "sua oficina"}.`,
+    ""
+  ];
+  if (notas.length) {
+    linhas.push("Sua autoavaliação (0 a 10):");
+    notas.forEach(x => linhas.push(`• ${x.area}: ${x.v}`));
+    linhas.push("", `Média geral: ${media.toFixed(1).replace(".", ",")}`);
+    if (atencao.length) linhas.push(`Pontos de atenção: ${atencao.join(", ")}`);
+    if (fortes.length)  linhas.push(`Pontos fortes: ${fortes.join(", ")}`);
+  } else {
+    linhas.push("Ainda não recebemos as notas de autoavaliação.");
+  }
+  linhas.push("", "Em breve conversamos para definir as prioridades da mentoria.", "", "Oficina de Alta Performance");
+  return linhas.join("\n");
+}
+
+/** Só dígitos, com o DDI do Brasil quando faltar. */
+function telefoneWa(v) {
+  const n = String(v || "").replace(/\D/g, "");
+  if (!n) return "";
+  return n.length <= 11 ? "55" + n : n;
+}
+
+function acoesEnvio(r) {
+  const rs = r.respostas || {};
+  const texto = relatorioTexto(r);
+  const email = String(rs["empresa.email"] || "").trim();
+  const fone = telefoneWa(rs["empresa.whatsapp"]);
+
+  const assunto = "Seu Diagnóstico 360° · " + (r.empresa || "Oficina de Alta Performance");
+  const mail = email
+    ? `<a class="btn prim" href="mailto:${esc(email)}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(texto)}">Enviar por e-mail</a>`
+    : `<button class="btn" type="button" disabled>E-mail não informado</button>`;
+  const zap = fone
+    ? `<a class="btn prim" target="_blank" rel="noopener" href="https://wa.me/${fone}?text=${encodeURIComponent(texto)}">Enviar por WhatsApp</a>`
+    : `<button class="btn" type="button" disabled>WhatsApp não informado</button>`;
+
+  return `
+    <div class="envio">
+      <b>Enviar relatório ao mentorado</b>
+      <div class="acoes">${mail}${zap}</div>
+      <small>Abre o seu e-mail ou o WhatsApp com a mensagem pronta; você só confirma o envio.</small>
+    </div>`;
+}
+
 function renderDetalhe(P, r) {
   const rs = r.respostas || {};
 
@@ -163,6 +220,7 @@ function renderDetalhe(P, r) {
         </div>
         <div class="radar">${radar(rs)}</div>
       </div>
+      ${acoesEnvio(r)}
       ${secoes}
     </div>`;
 }
