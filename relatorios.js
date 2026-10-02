@@ -130,6 +130,23 @@ function renderPainel() {
     </div>`;
 }
 
+/** Notas e destaques de um mentorado, usados no texto e no e-mail. */
+function dadosRelatorio(r) {
+  const rs = r.respostas || {};
+  const notas = AREAS_RADAR
+    .map(s => ({ area: s.curto, v: rs[s.id + ".nota"] }))
+    .filter(x => typeof x.v === "number");
+  const media = notas.length ? notas.reduce((a, x) => a + x.v, 0) / notas.length : null;
+  return {
+    nome: r.nome || "",
+    empresa: r.empresa || "",
+    notas,
+    media: media === null ? null : +media.toFixed(1),
+    atencao: notas.filter(x => x.v < 4).map(x => x.area),
+    fortes: notas.filter(x => x.v >= 7).map(x => x.area)
+  };
+}
+
 /** Texto do relatório que vai para o mentorado (e-mail e WhatsApp). */
 function relatorioTexto(r) {
   const rs = r.respostas || {};
@@ -165,6 +182,8 @@ function telefoneWa(v) {
   return n.length <= 11 ? "55" + n : n;
 }
 
+const emailAtivo = () => typeof ENVIO_EMAIL !== "undefined" && ENVIO_EMAIL.url && ENVIO_EMAIL.token;
+
 function acoesEnvio(r) {
   const rs = r.respostas || {};
   const texto = relatorioTexto(r);
@@ -172,19 +191,59 @@ function acoesEnvio(r) {
   const fone = telefoneWa(rs["empresa.whatsapp"]);
 
   const assunto = "Seu Diagnóstico 360° · " + (r.empresa || "Oficina de Alta Performance");
-  const mail = email
-    ? `<a class="btn prim" href="mailto:${esc(email)}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(texto)}">Enviar por e-mail</a>`
-    : `<button class="btn" type="button" disabled>E-mail não informado</button>`;
+  let mail;
+  if (!email) {
+    mail = `<button class="btn" type="button" disabled>E-mail não informado</button>`;
+  } else if (emailAtivo()) {
+    mail = `<button class="btn prim" type="button" data-enviar-email="${esc(r.id)}">Enviar por e-mail</button>`;
+  } else {
+    mail = `<a class="btn prim" href="mailto:${esc(email)}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(texto)}">Enviar por e-mail</a>`;
+  }
   const zap = fone
     ? `<a class="btn prim" target="_blank" rel="noopener" href="https://wa.me/${fone}?text=${encodeURIComponent(texto)}">Enviar por WhatsApp</a>`
     : `<button class="btn" type="button" disabled>WhatsApp não informado</button>`;
+
+  const nota = emailAtivo()
+    ? "O e-mail sai de imersao@volmastertech.com, com a logo da Oficina de Alta Performance. O WhatsApp abre com a mensagem pronta para você confirmar."
+    : "Envio automático de e-mail ainda não configurado: o botão abre o seu programa de e-mail com a mensagem pronta.";
 
   return `
     <div class="envio">
       <b>Enviar relatório ao mentorado</b>
       <div class="acoes">${mail}${zap}</div>
-      <small>Abre o seu e-mail ou o WhatsApp com a mensagem pronta; você só confirma o envio.</small>
+      <small>${nota}</small>
+      <div class="msg" id="msgEnvioRel" role="status"></div>
     </div>`;
+}
+
+async function enviarEmail(id, botao) {
+  const r = lista.find(x => x.id === id);
+  const m = $("#msgEnvioRel");
+  if (!r || !m) return;
+
+  const rs = r.respostas || {};
+  const dados = { ...dadosRelatorio(r), para: String(rs["empresa.email"] || "").trim(), token: ENVIO_EMAIL.token };
+
+  botao.disabled = true;
+  m.className = "msg";
+  m.textContent = "Enviando…";
+
+  try {
+    // text/plain evita a verificação prévia (CORS) que o Apps Script não responde
+    const resp = await fetch(ENVIO_EMAIL.url, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(dados)
+    });
+    const j = await resp.json();
+    if (!j.ok) throw new Error(j.erro || "Falha no envio");
+    m.className = "msg ok";
+    m.textContent = "E-mail enviado para " + dados.para + ".";
+  } catch (err) {
+    m.className = "msg err";
+    m.textContent = "Não foi possível enviar o e-mail (" + (err.message || "erro") + "). Tente de novo.";
+  }
+  botao.disabled = false;
 }
 
 function renderDetalhe(P, r) {
@@ -281,6 +340,9 @@ document.addEventListener("click", e => {
     window.scrollTo(0, 0);
     return;
   }
+
+  const env = alvo.closest("[data-enviar-email]");
+  if (env) { enviarEmail(env.dataset.enviarEmail, env); return; }
 
   if (alvo.id === "voltar")   { selecionado = null; renderPainel(); return; }
   if (alvo.id === "exportar") exportar();
