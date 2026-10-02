@@ -3,11 +3,21 @@
    ========================================================= */
 
 const LS_KEY = "diag360-rascunho";
+const ID_KEY = "diag360-id";
+
+/** Identificação anônima deste mentorado, guardada no navegador. */
+function meuId() {
+  let id = null;
+  try { id = localStorage.getItem(ID_KEY); } catch (e) {}
+  if (!id) {
+    id = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+    try { localStorage.setItem(ID_KEY, id); } catch (e) {}
+  }
+  return id;
+}
 
 let st = { respostas: {}, status: "rascunho" };   // rascunho local / espelho do doc remoto
 let atual = 0;                                    // índice do departamento aberto
-let db = null, uid = null;
-let podeGravar = true;
 let salvando = false, pendente = false, timer = null;
 
 try {
@@ -160,7 +170,7 @@ function irPara(i) {
 function mudou() {
   atualizarProg();
   salvarLocal();
-  if (db && uid && podeGravar) {
+  if (apiAtiva()) {
     status("Alterações não salvas…", "busy");
     clearTimeout(timer);
     timer = setTimeout(salvar, 1200);
@@ -185,7 +195,7 @@ function docRemoto() {
 }
 
 async function salvar() {
-  if (!db || !uid || !podeGravar) return false;
+  if (!apiAtiva()) return false;
   if (salvando) { pendente = true; return false; }
 
   salvando = true;
@@ -193,19 +203,12 @@ async function salvar() {
   let ok = false;
 
   try {
-    await db.doc("respostas/" + uid).set(docRemoto());
+    await api("salvar", { id: meuId(), doc: docRemoto() });
     ok = true;
     status("Salvo às " + new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }), "ok");
   } catch (err) {
-    if (err && (err.code === "invalid_argument" || err.code === "not_granted")) {
-      podeGravar = false;
-      semPermissao();
-    } else if (err && err.code === "unavailable") {
-      status("Sem conexão, tentando de novo…", "err");
-      setTimeout(salvar, 2500 + Math.random() * 1500);
-    } else {
-      status("Não foi possível salvar", "err");
-    }
+    status("Sem conexão, tentando de novo…", "err");
+    setTimeout(salvar, 4000 + Math.random() * 2000);
   }
 
   salvando = false;
@@ -213,11 +216,11 @@ async function salvar() {
   return ok;
 }
 
-function semPermissao() {
+function semServidor() {
   status("Salvo só neste navegador", "err");
   const a = $("#avisoLocal");
   a.hidden = false;
-  a.textContent = "Suas respostas estão guardadas apenas neste navegador e ainda não chegam ao seu mentor. Peça a ele um convite por e-mail para este formulário e abra pelo link do convite.";
+  a.textContent = "O envio ao seu mentor ainda não foi ativado. Suas respostas ficam guardadas neste navegador.";
 }
 
 async function enviar() {
@@ -229,9 +232,9 @@ async function enviar() {
     m.textContent = "Preencha seu nome e o nome da oficina no departamento 01 antes de enviar.";
     return;
   }
-  if (!db || !uid || !podeGravar) {
+  if (!apiAtiva()) {
     m.className = "msg err";
-    m.textContent = "O envio não está disponível neste acesso. Abra o formulário pelo convite que o seu mentor enviou por e-mail.";
+    m.textContent = "O envio ainda não está ativo. Avise o seu mentor.";
     return;
   }
 
@@ -298,35 +301,10 @@ document.addEventListener("input", e => {
 montarFicha();
 montarTrilho();
 
-(async () => {
-  const c = await conectar();
-  if (!c.db) {
-    if (window.claude && window.claude.use) semPermissao();
-    else status("Salvo só neste navegador", "err");
-    return;
-  }
-  db = c.db;
-  uid = c.uid;
-
-  // Só o administrador vê o atalho para os relatórios
-  if (c.souDono) $("#linkRelatorios").hidden = false;
-
-  // Carrega as respostas já salvas deste usuário
-  try {
-    const snap = await db.doc("respostas/" + uid).get();
-    if (snap.exists) {
-      const r = snap.data();
-      st = { respostas: { ...(r.respostas || {}) }, status: r.status || "rascunho", enviadoEm: r.enviadoEm || null };
-      salvarLocal();
-      montarFicha();
-      montarTrilho();
-      status("Respostas carregadas", "ok");
-    } else if (Object.keys(st.respostas).length) {
-      await salvar();   // sobe o rascunho que estava só no navegador
-    } else {
-      status("Pronto · salvamento automático", "ok");
-    }
-  } catch (e) {
-    status("Sem conexão com o servidor", "err");
-  }
-})();
+if (!apiAtiva()) {
+  semServidor();
+} else if (Object.keys(st.respostas).length) {
+  salvar();   // sobe o rascunho que estava só no navegador
+} else {
+  status("Pronto · salvamento automático", "ok");
+}

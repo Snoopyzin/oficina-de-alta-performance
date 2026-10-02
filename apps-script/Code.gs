@@ -1,58 +1,184 @@
 /**
- * Envio do relatório do Diagnóstico 360° por e-mail.
- * Publique este script com a conta imersao@volmastertech.com:
- * o e-mail sai em nome dela, com a logo da Oficina de Alta Performance.
+ * Diagnóstico 360° · armazenamento e envio de e-mail.
+ *
+ * Publique este script com a conta imersao@volmastertech.com.
+ *  - As respostas dos mentorados ficam numa planilha Google criada
+ *    automaticamente no Drive dessa conta ("Diagnóstico 360° – Respostas").
+ *  - O e-mail do relatório sai em nome dessa conta, com a logo da oficina.
+ *  - Ler as respostas e enviar e-mail exigem a senha do administrador.
  */
 
-const TOKEN = "TROQUE-ESTE-CODIGO";   // invente um código longo e repita em config.js
+const ADMIN_SENHA = "TROQUE-ESTA-SENHA";   // a senha que só você vai digitar na página de relatórios
 const REMETENTE = "Oficina de Alta Performance";
 const LOGO_URL = "https://snoopyzin.github.io/oficina-de-alta-performance/images/logo.png";
-const LIMITE_POR_DIA = 100;           // trava de segurança
+const LIMITE_EMAILS_DIA = 100;             // trava de segurança
+
+const NOME_PLANILHA = "Diagnóstico 360° – Respostas";
+const AREAS = [
+  ["estrategia", "Estratégia"], ["comercial", "Comercial"], ["oficina", "Oficina"],
+  ["pecas", "Peças"], ["financeiro", "Financeiro"], ["pessoas", "Pessoas"],
+  ["processos", "Processos"], ["tecnologia", "Tecnologia"], ["legal", "Jurídico e SSMA"], ["mercado", "Mercado"]
+];
+const FIXAS = ["ID", "Atualizado em", "Enviado em", "Status", "% preenchido", "Nome", "Oficina", "E-mail", "WhatsApp"];
+const COL_JSON = FIXAS.length + AREAS.length + 1;   // primeira coluna com o JSON completo
+const PEDACOS = 6;                                  // o JSON é dividido em células de até 45 mil caracteres
+const TAM_PEDACO = 45000;
+
+
+/* ---------- Entrada ---------- */
 
 function doPost(e) {
   try {
     const d = JSON.parse(e.postData.contents);
 
-    if (d.token !== TOKEN) return resposta({ ok: false, erro: "Não autorizado." });
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(d.para || ""))) return resposta({ ok: false, erro: "E-mail inválido." });
-    if (!contarEnvio()) return resposta({ ok: false, erro: "Limite diário de envios atingido." });
-
-    const opcoes = {
-      to: d.para,
-      subject: "Seu Diagnóstico 360° · " + (d.empresa || "Oficina de Alta Performance"),
-      htmlBody: montarHtml(d),
-      body: textoSimples(d),
-      name: REMETENTE,
-      replyTo: Session.getEffectiveUser().getEmail()
-    };
-
-    try {
-      opcoes.inlineImages = { logo: UrlFetchApp.fetch(LOGO_URL).getBlob().setName("logo.png") };
-    } catch (err) {
-      // sem a logo embutida o e-mail ainda é enviado
+    switch (d.acao) {
+      case "salvar":      return resposta(salvar(d));
+      case "listar":      exigirSenha(d); return resposta(listar());
+      case "enviarEmail": exigirSenha(d); return resposta(enviarEmail(d));
+      default:            return resposta({ ok: false, erro: "Ação desconhecida." });
     }
-
-    MailApp.sendEmail(opcoes);
-    return resposta({ ok: true });
   } catch (err) {
-    return resposta({ ok: false, erro: String(err) });
+    if (err && err.codigo === "senha") return resposta({ ok: false, codigo: "senha", erro: "Senha incorreta." });
+    return resposta({ ok: false, erro: String(err && err.message || err) });
   }
 }
 
 function doGet() {
-  return resposta({ ok: true, servico: "Diagnóstico 360° · envio de e-mail" });
+  return resposta({ ok: true, servico: "Diagnóstico 360°" });
 }
 
 function resposta(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
 }
 
+function exigirSenha(d) {
+  if (!d.senha || d.senha !== ADMIN_SENHA) {
+    const e = new Error("Senha incorreta.");
+    e.codigo = "senha";
+    throw e;
+  }
+}
+
+
+/* ---------- Planilha ---------- */
+
+function planilha() {
+  const props = PropertiesService.getScriptProperties();
+  let ss = null;
+  const id = props.getProperty("planilha");
+  if (id) {
+    try { ss = SpreadsheetApp.openById(id); } catch (err) { ss = null; }
+  }
+  if (!ss) {
+    ss = SpreadsheetApp.create(NOME_PLANILHA);
+    props.setProperty("planilha", ss.getId());
+  }
+
+  let aba = ss.getSheetByName("Respostas");
+  if (!aba) {
+    aba = ss.getSheets()[0];
+    aba.setName("Respostas");
+    const cab = FIXAS.concat(AREAS.map(a => "Nota · " + a[1]), ["Respostas completas (JSON)"]);
+    aba.getRange(1, 1, aba.getMaxRows(), Math.max(aba.getMaxColumns(), COL_JSON + PEDACOS)).setNumberFormat("@");
+    aba.getRange(1, 1, 1, cab.length).setValues([cab]).setFontWeight("bold").setBackground("#E08A2E");
+    aba.setFrozenRows(1);
+  }
+  return aba;
+}
+
+function salvar(d) {
+  const id = String(d.id || "");
+  if (!/^[A-Za-z0-9-]{16,64}$/.test(id)) throw new Error("Identificação inválida.");
+
+  const doc = d.doc || {};
+  const resp = doc.respostas || {};
+  const json = JSON.stringify(resp);
+  if (json.length > TAM_PEDACO * PEDACOS) throw new Error("Respostas grandes demais.");
+
+  const pedacos = [];
+  for (let i = 0; i < PEDACOS; i++) pedacos.push(json.slice(i * TAM_PEDACO, (i + 1) * TAM_PEDACO));
+
+  const linha = [
+    id, doc.atualizadoEm || "", doc.enviadoEm || "", doc.status || "rascunho", String(doc.progresso || 0),
+    String(doc.nome || ""), String(doc.empresa || ""), String(resp["empresa.email"] || ""), String(resp["empresa.whatsapp"] || "")
+  ].concat(AREAS.map(a => resp[a[0] + ".nota"] === undefined ? "" : String(resp[a[0] + ".nota"])), pedacos);
+
+  const lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    const aba = planilha();
+    const ultima = aba.getLastRow();
+    let alvo = 0;
+    if (ultima > 1) {
+      const ids = aba.getRange(2, 1, ultima - 1, 1).getValues();
+      for (let i = 0; i < ids.length; i++) if (ids[i][0] === id) { alvo = i + 2; break; }
+    }
+    if (!alvo) alvo = ultima + 1;
+    aba.getRange(alvo, 1, 1, linha.length).setNumberFormat("@").setValues([linha]);
+  } finally {
+    lock.releaseLock();
+  }
+  return { ok: true };
+}
+
+function listar() {
+  const aba = planilha();
+  const ultima = aba.getLastRow();
+  const docs = [];
+
+  if (ultima > 1) {
+    const dados = aba.getRange(2, 1, ultima - 1, COL_JSON + PEDACOS - 1).getValues();
+    dados.forEach(l => {
+      if (!l[0]) return;
+      let respostas = {};
+      try { respostas = JSON.parse(l.slice(COL_JSON - 1, COL_JSON - 1 + PEDACOS).join("") || "{}"); } catch (err) {}
+      docs.push({
+        id: String(l[0]),
+        atualizadoEm: String(l[1] || ""),
+        enviadoEm: String(l[2] || "") || null,
+        status: String(l[3] || "rascunho"),
+        progresso: Number(l[4]) || 0,
+        nome: String(l[5] || ""),
+        empresa: String(l[6] || ""),
+        respostas: respostas
+      });
+    });
+  }
+  return { ok: true, docs: docs, planilha: aba.getParent().getUrl() };
+}
+
+
+/* ---------- E-mail do relatório ---------- */
+
+function enviarEmail(d) {
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(d.para || ""))) throw new Error("E-mail inválido.");
+  if (!contarEnvio()) throw new Error("Limite diário de envios atingido.");
+
+  const opcoes = {
+    to: d.para,
+    subject: "Seu Diagnóstico 360° · " + (d.empresa || "Oficina de Alta Performance"),
+    htmlBody: montarHtml(d),
+    body: textoSimples(d),
+    name: REMETENTE,
+    replyTo: Session.getEffectiveUser().getEmail()
+  };
+
+  try {
+    opcoes.inlineImages = { logo: UrlFetchApp.fetch(LOGO_URL).getBlob().setName("logo.png") };
+  } catch (err) {
+    // sem a logo embutida o e-mail ainda é enviado
+  }
+
+  MailApp.sendEmail(opcoes);
+  return { ok: true };
+}
+
 function contarEnvio() {
   const props = PropertiesService.getScriptProperties();
   const hoje = Utilities.formatDate(new Date(), "America/Sao_Paulo", "yyyy-MM-dd");
-  const [dia, n] = String(props.getProperty("contador") || "").split("|");
-  const atual = dia === hoje ? Number(n) : 0;
-  if (atual >= LIMITE_POR_DIA) return false;
+  const partes = String(props.getProperty("contador") || "").split("|");
+  const atual = partes[0] === hoje ? Number(partes[1]) : 0;
+  if (atual >= LIMITE_EMAILS_DIA) return false;
   props.setProperty("contador", hoje + "|" + (atual + 1));
   return true;
 }

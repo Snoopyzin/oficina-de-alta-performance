@@ -163,16 +163,21 @@ function status(txt, cls) {
   $("#statusDot").className = "dot " + (cls || "");
 }
 
-/** Conecta ao usuário e ao banco da plataforma. Devolve { db, uid, souDono } (nulos se indisponível). */
-async function conectar() {
-  const r = { db: null, uid: null, souDono: false };
-  if (!window.claude || !window.claude.use) return r;
+const apiAtiva = () => typeof API !== "undefined" && !!API.url;
 
-  const [u, d] = await Promise.all([claude.use("user"), claude.use("db")]);
-  if (u) {
-    try { r.uid = await u.id(); } catch (e) {}
-    try { r.souDono = await u.isOwner(); } catch (e) {}
+/** Chama o servidor (Google Apps Script). Lança erro se a resposta não for ok. */
+async function api(acao, dados) {
+  // text/plain evita a verificação prévia (CORS) que o Apps Script não responde
+  const resp = await fetch(API.url, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify({ acao, ...dados })
+  });
+  const j = await resp.json();
+  if (!j.ok) {
+    const e = new Error(j.erro || "Falha no servidor");
+    e.codigo = j.codigo;
+    throw e;
   }
-  if (d && r.uid) r.db = d;
-  return r;
+  return j;
 }

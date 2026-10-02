@@ -2,7 +2,10 @@
    Relatórios (relatorios.html) — somente o administrador
    ========================================================= */
 
-let lista = [], selecionado = null;
+let lista = [], selecionado = null, urlPlanilha = "";
+
+const SENHA_KEY = "diag360-senha";
+const senhaAdmin = () => { try { return sessionStorage.getItem(SENHA_KEY) || ""; } catch (e) { return ""; } };
 
 function corNota(v) {
   if (v === undefined || v === null || v === "") return "v";
@@ -120,6 +123,9 @@ function renderPainel() {
       <div class="kpi"><b>${lista.length - enviados}</b><span>Ainda preenchendo</span></div>
       <div class="resumo-acao">
         <button class="btn steel" type="button" id="exportar" ${lista.length ? "" : "disabled"}>Exportar planilha (CSV)</button>
+        <button class="btn" type="button" id="atualizar">Atualizar</button>
+        ${urlPlanilha ? `<a class="btn" href="${esc(urlPlanilha)}" target="_blank" rel="noopener">Abrir no Google Planilhas</a>` : ""}
+        <button class="btn" type="button" id="sair">Sair</button>
       </div>
     </div>
     <div class="msg" id="msgExport" role="status"></div>
@@ -182,7 +188,7 @@ function telefoneWa(v) {
   return n.length <= 11 ? "55" + n : n;
 }
 
-const emailAtivo = () => typeof ENVIO_EMAIL !== "undefined" && ENVIO_EMAIL.url && ENVIO_EMAIL.token;
+const emailAtivo = () => apiAtiva();
 
 function acoesEnvio(r) {
   const rs = r.respostas || {};
@@ -222,21 +228,14 @@ async function enviarEmail(id, botao) {
   if (!r || !m) return;
 
   const rs = r.respostas || {};
-  const dados = { ...dadosRelatorio(r), para: String(rs["empresa.email"] || "").trim(), token: ENVIO_EMAIL.token };
+  const dados = { ...dadosRelatorio(r), para: String(rs["empresa.email"] || "").trim() };
 
   botao.disabled = true;
   m.className = "msg";
   m.textContent = "Enviando…";
 
   try {
-    // text/plain evita a verificação prévia (CORS) que o Apps Script não responde
-    const resp = await fetch(ENVIO_EMAIL.url, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(dados)
-    });
-    const j = await resp.json();
-    if (!j.ok) throw new Error(j.erro || "Falha no envio");
+    await api("enviarEmail", { ...dados, senha: senhaAdmin() });
     m.className = "msg ok";
     m.textContent = "E-mail enviado para " + dados.para + ".";
   } catch (err) {
@@ -309,22 +308,17 @@ async function exportar() {
     ...lista.map(r => cols.map(c => cel(c[1](r))).join(";"))
   ].join("\r\n");
 
-  const dl = window.claude?.use ? await claude.use("downloads") : null;
-  if (!dl) {
-    m.className = "msg err";
-    m.textContent = "A exportação não está disponível nesta visualização.";
-    return;
-  }
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "diagnostico-360-mentorados.csv";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(link.href), 1000);
 
-  try {
-    await dl.save({ filename: "diagnostico-360-mentorados.csv", data: csv });
-    m.className = "msg ok";
-    m.textContent = "Planilha gerada.";
-  } catch (err) {
-    if (err && err.code === "declined") return;
-    m.className = "msg err";
-    m.textContent = "Não foi possível gerar a planilha. Tente novamente em alguns segundos.";
-  }
+  m.className = "msg ok";
+  m.textContent = "Planilha gerada.";
 }
 
 
@@ -346,10 +340,14 @@ document.addEventListener("click", e => {
 
   if (alvo.id === "voltar")   { selecionado = null; renderPainel(); return; }
   if (alvo.id === "exportar") exportar();
+  if (alvo.id === "atualizar") carregar();
+  if (alvo.id === "entrar") entrar();
+  if (alvo.id === "sair") sair();
 });
 
 // Linhas da tabela acessíveis por teclado
 document.addEventListener("keydown", e => {
+  if (e.key === "Enter" && e.target.id === "senha") { entrar(); return; }
   const linha = e.target.closest && e.target.closest("tr.linha");
   if (linha && (e.key === "Enter" || e.key === " ")) {
     e.preventDefault();
@@ -361,30 +359,62 @@ function bloqueado(msg) {
   $("#vistaPainel").innerHTML = `<div class="bloco"><div class="vazio">${esc(msg)}</div></div>`;
 }
 
-(async () => {
-  const c = await conectar();
+function telaLogin(erro) {
+  $("#vistaPainel").innerHTML = `
+    <div class="bloco login">
+      <h3>Acesso do administrador</h3>
+      <p>Digite a senha para ver as respostas dos mentorados.</p>
+      <div class="q">
+        <label class="t" for="senha">Senha</label>
+        <input type="password" id="senha" autocomplete="current-password">
+      </div>
+      <div class="acoes"><button class="btn prim" type="button" id="entrar">Entrar</button></div>
+      <div class="msg err" role="alert">${esc(erro || "")}</div>
+    </div>`;
+  const campo = $("#senha");
+  if (campo) campo.focus();
+}
 
-  if (!c.db) {
-    status("Sem conexão", "err");
-    bloqueado("Não foi possível verificar o seu acesso. Abra esta página pela plataforma, com a conta do administrador.");
-    return;
+function entrar() {
+  const v = ($("#senha") || {}).value || "";
+  if (!v) return;
+  try { sessionStorage.setItem(SENHA_KEY, v); } catch (e) {}
+  carregar();
+}
+
+function sair() {
+  try { sessionStorage.removeItem(SENHA_KEY); } catch (e) {}
+  lista = [];
+  selecionado = null;
+  status("Desconectado", "");
+  telaLogin();
+}
+
+async function carregar() {
+  if (!senhaAdmin()) { telaLogin(); return; }
+  status("Carregando…", "busy");
+  try {
+    const j = await api("listar", { senha: senhaAdmin() });
+    lista = j.docs.sort((a, b) => String(b.atualizadoEm || "").localeCompare(String(a.atualizadoEm || "")));
+    urlPlanilha = j.planilha || "";
+    status("Atualizado às " + new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }), "ok");
+    renderPainel();
+  } catch (err) {
+    if (err.codigo === "senha") {
+      try { sessionStorage.removeItem(SENHA_KEY); } catch (e) {}
+      status("Acesso restrito", "err");
+      telaLogin("Senha incorreta.");
+    } else {
+      status("Sem conexão", "err");
+      if (!lista.length) bloqueado("Não foi possível carregar as respostas. Verifique a conexão e tente de novo.");
+    }
   }
-  if (!c.souDono) {
-    status("Acesso restrito", "err");
-    bloqueado("Esta página é exclusiva do administrador da mentoria.");
-    return;
-  }
+}
 
-  status("Administrador · tempo real", "ok");
-  renderPainel();
-
-  c.db.collection("respostas").onSnapshot(
-    q => {
-      lista = q.docs
-        .map(x => ({ id: x.id, ...x.data() }))
-        .sort((a, b) => String(b.atualizadoEm || "").localeCompare(String(a.atualizadoEm || "")));
-      renderPainel();
-    },
-    () => bloqueado("Não foi possível carregar as respostas. Recarregue a página.")
-  );
-})();
+if (!apiAtiva()) {
+  status("Servidor não configurado", "err");
+  bloqueado("O servidor ainda não foi ativado. Siga o passo a passo em apps-script/LEIA-ME.md e preencha o config.js.");
+} else {
+  carregar();
+  setInterval(() => { if (senhaAdmin() && !document.hidden) carregar(); }, 60000);
+}
