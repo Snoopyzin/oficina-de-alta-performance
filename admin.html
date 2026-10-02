@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Painel · Diagnóstico 360°</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="placa">
+  <div class="wrap">
+    <div class="marca">
+      <h1><img class="logo" src="images/logo.png" alt="Oficina de Alta Performance — Desenvolvendo oficinas de sucesso"></h1>
+    </div>
+
+    <nav class="menu" aria-label="Principal">
+      <a href="admin.html" aria-current="page">Painel</a>
+      <a href="relatorios.html">Relatórios</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="hub-intro">
+    <h2>Escolha qual link enviar</h2>
+    <p>Esta é a sua página de controle. Copie o link do formulário para os mentorados e guarde o link dos relatórios só para você.</p>
+  </div>
+
+  <section class="hub" id="hub" aria-label="Links"></section>
+</main>
+
+<script>
+  // Utilitários mínimos (esta página não carrega o questionário)
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+</script>
+<script src="admin.js"></script>
+</body>
+</html>
