@@ -130,7 +130,8 @@ const SECOES=[
   {id:"osdigital",tipo:"textarea",t:"O orçamento e a OS são enviados ao cliente com fotos e vídeos?"},
   {id:"fiscal",tipo:"textarea",t:"Emissão de notas, boletos, Pix e maquininha estão integrados ao sistema?"},
   {id:"infotec",tipo:"textarea",t:"Como a equipe acessa informação técnica?",h:"Manuais, diagramas elétricos, softwares de montadora, grupos técnicos."},
-  {id:"investir",tipo:"textarea",t:"Que equipamentos ou ferramentas fazem falta? Há investimento planejado?"}
+  {id:"investir",tipo:"textarea",t:"Que equipamentos ou ferramentas fazem falta? Há investimento planejado?"},
+  {id:"celulares",tipo:"textarea",t:"Os contatos com os clientes são realizados por meio de celulares pessoais dos colaboradores ou a empresa disponibiliza celulares corporativos para os profissionais que possuem contato direto com os clientes?"}
  ]},
  {id:"legal",t:"Jurídico, segurança e meio ambiente",curto:"Jurídico e SSMA",intro:"Riscos que não aparecem no dia a dia até virarem multa, processo ou acidente.",qs:[
   NOTA("jurídico, segurança e meio ambiente"),
