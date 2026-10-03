@@ -193,8 +193,10 @@ function preenchido(v) {
 }
 
 function status(txt, cls) {
-  $("#statusTxt").textContent = txt;
-  $("#statusDot").className = "dot " + (cls || "");
+  const t = $("#statusTxt"), p = $("#statusDot");
+  if (!t || !p) return;   // algumas páginas não mostram o estado de salvamento
+  t.textContent = txt;
+  p.className = "dot " + (cls || "");
 }
 
 const apiAtiva = () => typeof API !== "undefined" && !!API.url;

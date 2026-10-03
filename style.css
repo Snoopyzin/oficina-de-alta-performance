@@ -788,3 +788,20 @@ a.btn { text-decoration: none; display: inline-block; }
   font-weight: 500;
   font-size: 14px;
 }
+
+/* Contato na barra do formulário */
+.contato {
+  margin-left: auto;
+  font-family: var(--f-mono);
+  font-size: 13px;
+  color: #AEB8BF;
+}
+
+.contato a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.contato a:hover { text-decoration: underline; }
