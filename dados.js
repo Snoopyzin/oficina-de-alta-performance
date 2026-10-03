@@ -120,7 +120,8 @@ const SECOES=[
   {id:"frequencia",tipo:"textarea",t:"Com que frequência você olha os números e onde?",h:"Planilha, sistema, painel, caderno."},
   {id:"rotinas",tipo:"textarea",t:"Existem rotinas fixas de gestão?",h:"Reunião diária com a oficina, fechamento semanal, reunião mensal de resultados."},
   {id:"checklists",tipo:"textarea",t:"Vocês usam checklists?",h:"Recepção, revisão preventiva, entrega, limpeza."},
-  {id:"comunicacao",tipo:"textarea",t:"Como as informações circulam internamente?",h:"Quadro de OS, grupo de WhatsApp, sistema, conversa no pátio."}
+  {id:"comunicacao",tipo:"textarea",t:"Como as informações circulam internamente?",h:"Quadro de OS, grupo de WhatsApp, sistema, conversa no pátio."},
+  {id:"dificuldadeprocessos",tipo:"textarea",t:"Em relação aos processos da empresa, qual é hoje a sua maior dificuldade? Em quais áreas você acredita que podemos contribuir para melhorar seus resultados? Quais são suas principais expectativas em relação à mentoria?"}
  ]},
  {id:"tecnologia",t:"Tecnologia e sistemas",curto:"Tecnologia",intro:"Ferramentas digitais que sustentam a gestão e o acesso à informação técnica.",qs:[
   NOTA("tecnologia e sistemas"),
