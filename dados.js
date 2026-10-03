@@ -94,7 +94,8 @@ const SECOES=[
   {id:"dividas",tipo:"textarea",t:"Há empréstimos, financiamentos ou falta de capital de giro?"},
   {id:"contador",tipo:"textarea",t:"Como é a relação com a contabilidade? Os impostos estão em dia e sob controle?"},
   {id:"impostos",tipo:"textarea",t:"A empresa possui controle sobre o valor dos impostos pagos mensalmente? Se sim, qual foi a média mensal dos impostos pagos nos últimos 12 meses?"},
-  {id:"futurofin",tipo:"textarea",t:"Como você gostaria que estivesse a situação financeira da sua empresa daqui a 1 ano e daqui a 5 anos?",h:"Descreva suas expectativas em relação ao faturamento, lucro, fluxo de caixa, reservas financeiras, nível de endividamento, investimentos e capacidade de crescimento da empresa."}
+  {id:"futurofin",tipo:"textarea",t:"Como você gostaria que estivesse a situação financeira da sua empresa daqui a 1 ano e daqui a 5 anos?",h:"Descreva suas expectativas em relação ao faturamento, lucro, fluxo de caixa, reservas financeiras, nível de endividamento, investimentos e capacidade de crescimento da empresa."},
+  {id:"futuroprolabore",tipo:"textarea",t:"Como você gostaria que estivesse o seu pró-labore daqui a 1 ano e daqui a 5 anos?"}
  ]},
  {id:"pessoas",t:"Pessoas, equipe e cultura",curto:"Pessoas",intro:"Quem faz a oficina funcionar, como é contratado, treinado, pago e liderado.",qs:[
   NOTA("pessoas e equipe"),
