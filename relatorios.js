@@ -404,6 +404,10 @@ async function carregar() {
       try { sessionStorage.removeItem(SENHA_KEY); } catch (e) {}
       status("Acesso restrito", "err");
       telaLogin("Senha incorreta.");
+    } else if (err.codigo === "bloqueado") {
+      try { sessionStorage.removeItem(SENHA_KEY); } catch (e) {}
+      status("Acesso bloqueado", "err");
+      telaLogin(err.message);
     } else {
       status("Sem conexão", "err");
       if (!lista.length) bloqueado("Não foi possível carregar as respostas. Verifique a conexão e tente de novo.");

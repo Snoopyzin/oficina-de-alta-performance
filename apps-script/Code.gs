@@ -5,10 +5,15 @@
  *  - As respostas dos mentorados ficam numa planilha Google criada
  *    automaticamente no Drive dessa conta ("Diagnóstico 360° – Respostas").
  *  - O e-mail do relatório sai em nome dessa conta, com a logo da oficina.
- *  - Ler as respostas e enviar e-mail exigem a senha do administrador.
+ *  - Ler as respostas e enviar e-mail exigem a senha de um administrador.
  */
 
-const ADMIN_SENHA = "TROQUE-ESTA-SENHA";   // a senha que só você vai digitar na página de relatórios
+// Administradores: "nome": "senha" (mínimo de 8 caracteres). Quem não está aqui não vê nada.
+const ADMINS = {
+  "Administrador": "TROQUE-ESTA-SENHA"
+  // , "Sócio": "outra-senha-forte"
+};
+const MAX_TENTATIVAS = 10;                 // senhas erradas seguidas antes de bloquear por 15 minutos
 const REMETENTE = "Oficina de Alta Performance";
 const LOGO_URL = "https://snoopyzin.github.io/oficina-de-alta-performance/images/logo.png";
 const LIMITE_EMAILS_DIA = 100;             // trava de segurança
@@ -38,7 +43,7 @@ function doPost(e) {
       default:            return resposta({ ok: false, erro: "Ação desconhecida." });
     }
   } catch (err) {
-    if (err && err.codigo === "senha") return resposta({ ok: false, codigo: "senha", erro: "Senha incorreta." });
+    if (err && (err.codigo === "senha" || err.codigo === "bloqueado")) return resposta({ ok: false, codigo: err.codigo, erro: err.message });
     return resposta({ ok: false, erro: String(err && err.message || err) });
   }
 }
@@ -51,12 +56,26 @@ function resposta(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
 }
 
+/** Confere a senha e devolve o nome do administrador. Bloqueia após muitas tentativas erradas. */
 function exigirSenha(d) {
-  if (!d.senha || d.senha !== ADMIN_SENHA) {
+  const cache = CacheService.getScriptCache();
+  const falhas = Number(cache.get("falhas") || 0);
+  if (falhas >= MAX_TENTATIVAS) {
+    const e = new Error("Muitas tentativas erradas. Aguarde 15 minutos.");
+    e.codigo = "bloqueado";
+    throw e;
+  }
+
+  const senha = String(d.senha || "");
+  const nome = senha.length >= 8 && Object.keys(ADMINS).find(n => ADMINS[n] === senha);
+  if (!nome) {
+    cache.put("falhas", String(falhas + 1), 900);
     const e = new Error("Senha incorreta.");
     e.codigo = "senha";
     throw e;
   }
+  cache.remove("falhas");
+  return nome;
 }
 
 
