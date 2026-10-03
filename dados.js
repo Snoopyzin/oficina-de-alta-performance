@@ -105,6 +105,7 @@ const SECOES=[
   {id:"integracao",tipo:"textarea",t:"Existe integração para novos colaboradores e descrição de cargos?"},
   {id:"treinamento",tipo:"textarea",t:"Quais treinamentos técnicos e comportamentais a equipe fez no último ano?"},
   {id:"remuneracao",tipo:"textarea",t:"Como é a remuneração?",h:"Salário fixo, comissão por produtividade, bônus por meta, plano de carreira."},
+  {id:"bonificacao",tipo:"textarea",t:"A empresa possui um sistema de bonificação ou premiação por desempenho, baseado no cumprimento das metas individuais ou de cada departamento?"},
   {id:"turnover",tipo:"textarea",t:"Quantas pessoas saíram nos últimos 12 meses e por quê?"},
   {id:"clima",tipo:"textarea",t:"Como você avalia o clima e o comprometimento da equipe?",h:"Faltas, atrasos, conflitos, iniciativa."},
   {id:"reunioesdiarias",tipo:"textarea",t:"Você realiza reuniões diárias com sua equipe para planejar e organizar as atividades do dia?"},
