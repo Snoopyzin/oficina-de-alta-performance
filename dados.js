@@ -77,7 +77,7 @@ const SECOES=[
   {id:"espera",tipo:"textarea",t:"Quanto tempo o caminhão espera peça, em média?"},
   {id:"markup",tipo:"textarea",t:"Como é definido o preço de venda das peças? Qual a margem média?"},
   {id:"pecacliente",tipo:"textarea",t:"Qual a política para peça trazida pelo cliente?",h:"Garantia do serviço, cobrança diferenciada, recusa."},
-  {id:"parado",tipo:"textarea",t:"Como são tratados itens parados, cascos de retorno, sucata e devoluções?"}
+  {id:"parado",tipo:"textarea",t:"Como a empresa administra as peças que permanecem por longos períodos em estoque? Existe um controle do tempo de permanência de cada peça no estoque e são adotadas estratégias para identificar, movimentar ou reduzir o estoque de peças paradas?"}
  ]},
  {id:"financeiro",t:"Financeiro e precificação",curto:"Financeiro",intro:"Faturamento, custos, margem e caixa. Os números podem ser aproximados; o importante é saber o que é medido.",qs:[
   NOTA("o financeiro"),
