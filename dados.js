@@ -27,7 +27,7 @@ const SECOES=[
  ]},
  {id:"estrategia",t:"Dono, estratégia e liderança",curto:"Estratégia",intro:"Como o dono ocupa o tempo, para onde a empresa está indo e quanto ela depende de você.",qs:[
   NOTA("a estratégia e a sua liderança"),
-  {id:"dia",tipo:"textarea",t:"Como é o seu dia típico?",h:"Quanto do seu tempo vai para a ferramenta, para atender cliente, para resolver problema e para pensar no negócio?"},
+  {id:"dia",tipo:"textarea",t:"Como é o seu dia típico?",h:"Quanto do seu tempo é dedicado ao operacional (execução de serviços mecânicos, elétricos e diagnósticos), ao atendimento de clientes, à resolução de problemas e ao planejamento e desenvolvimento do negócio?"},
   {id:"visao",tipo:"textarea",t:"Onde você quer que a empresa esteja daqui a 3 a 5 anos?"},
   {id:"metas",tipo:"textarea",t:"A empresa tem metas escritas? Quais são e como você acompanha?"},
   {id:"diferencial",tipo:"textarea",t:"Por que o cliente escolhe você e não o concorrente?"},
