@@ -792,6 +792,7 @@ a.btn { text-decoration: none; display: inline-block; }
 /* Contato na barra do formulário */
 .contato {
   margin-left: auto;
+  text-align: right;
   font-family: var(--f-mono);
   font-size: 13px;
   color: #AEB8BF;
