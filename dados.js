@@ -132,11 +132,11 @@ const SECOES=[
   {id:"infotec",tipo:"textarea",t:"Como a equipe acessa informação técnica?",h:"Manuais, diagramas elétricos, softwares de montadora, grupos técnicos."},
   {id:"investir",tipo:"textarea",t:"Que equipamentos ou ferramentas fazem falta? Há investimento planejado?"},
   {id:"celulares",tipo:"textarea",t:"Os contatos com os clientes são realizados por meio de celulares pessoais dos colaboradores ou a empresa disponibiliza celulares corporativos para os profissionais que possuem contato direto com os clientes?"},
-  {id:"backup",tipo:"textarea",t:"A empresa possui backup dos dados, como cadastro de clientes, ordens de serviço, informações financeiras e demais documentos? Quem possui acesso a esses dados e quais são os procedimentos adotados caso o computador ou o sistema fique indisponível?"}
+  {id:"backup",tipo:"simnao",t:"A empresa possui backup dos dados, como cadastro de clientes, ordens de serviço, informações financeiras e demais documentos?",det:"Quem possui acesso a esses dados e quais são os procedimentos adotados caso o computador ou o sistema fique indisponível?"}
  ]},
  {id:"legal",t:"Jurídico, segurança e meio ambiente",curto:"Jurídico e SSMA",intro:"Riscos que não aparecem no dia a dia até virarem multa, processo ou acidente.",qs:[
   NOTA("jurídico, segurança e meio ambiente"),
-  {id:"licencas",tipo:"textarea",t:"Alvará, licença ambiental e AVCB (bombeiros) estão em dia?"},
+  {id:"licencas",tipo:"textarea",t:"A empresa possui todas as licenças e documentos obrigatórios em dia, como Alvará de Funcionamento, Licença Ambiental e AVCB (Auto de Vistoria do Corpo de Bombeiros)?"},
   {id:"residuos",tipo:"textarea",t:"Como é feito o descarte de óleo usado, filtros, baterias, pneus e água oleosa?",h:"Caixa separadora, empresa coletora, certificado de destinação."},
   {id:"seguranca",tipo:"textarea",t:"Como está a segurança do trabalho?",h:"Uso de EPIs, NR-12 (elevadores e máquinas), NR-10, NR-35, acidentes recentes."},
   {id:"trabalhista",tipo:"textarea",t:"Todos os colaboradores são registrados? Há ou houve processos trabalhistas? Como são as horas extras?"},
@@ -171,6 +171,19 @@ const ESC_MAP = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ESC_MAP[c]);
 
 const key = (s, q) => s.id + "." + q.id;
+
+/** Título completo de uma pergunta (Sim/Não leva o complemento junto). */
+const tituloPergunta = q => q.t + (q.det ? " " + q.det : "");
+
+/** Resposta como texto: Sim/Não vem acompanhado do detalhe digitado. */
+function respostaTexto(rs, s, q) {
+  const v = rs[key(s, q)];
+  if (q.tipo === "simnao") {
+    return [v, rs[key(s, q) + ".det"]].filter(preenchido).join(" — ");
+  }
+  if (!preenchido(v)) return "";
+  return Array.isArray(v) ? v.join(", ") : String(v);
+}
 
 function preenchido(v) {
   if (Array.isArray(v)) return v.length > 0;

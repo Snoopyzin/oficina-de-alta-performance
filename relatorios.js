@@ -252,12 +252,12 @@ function renderDetalhe(P, r) {
     <div class="resp-sec">
       <h4>${esc(s.t)}</h4>
       ${s.qs.map(q => {
-        const v = rs[key(s, q)];
-        const tem = preenchido(v);
+        const txt = respostaTexto(rs, s, q);
+        const tem = txt !== "";
         return `
         <div class="resp">
-          <div class="p">${esc(q.t)}</div>
-          <div class="a ${tem ? "" : "vz"}">${tem ? esc(fmt(v)) : "Sem resposta"}</div>
+          <div class="p">${esc(tituloPergunta(q))}</div>
+          <div class="a ${tem ? "" : "vz"}">${tem ? esc(txt) : "Sem resposta"}</div>
         </div>`;
       }).join("")}
     </div>`).join("");
@@ -296,10 +296,7 @@ async function exportar() {
     ["Atualizado em", r => dataBR(r.atualizadoEm)]
   ];
   SECOES.forEach(s => s.qs.forEach(q => {
-    cols.push([s.curto + " | " + q.t, r => {
-      const v = (r.respostas || {})[key(s, q)];
-      return preenchido(v) ? fmt(v) : "";
-    }]);
+    cols.push([s.curto + " | " + tituloPergunta(q), r => respostaTexto(r.respostas || {}, s, q)]);
   }));
 
   const cel = v => '"' + String(v ?? "").replace(/"/g, '""') + '"';

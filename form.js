@@ -73,6 +73,24 @@ function campoChecks(q, k, v, fid, dica) {
     </div>`;
 }
 
+function campoSimNao(q, k, v, fid, dica) {
+  const opcoes = ["Sim", "Não"].map((o, i) => `
+    <label>
+      <input type="radio" id="${fid}_${i}" name="${fid}" data-k="${k}" value="${o}" ${v === o ? "checked" : ""}>
+      ${o}
+    </label>`).join("");
+  const det = st.respostas[k + ".det"];
+  const campoDet = q.det ? `
+      <label class="t det" for="${fid}_det">${esc(q.det)}</label>
+      <textarea id="${fid}_det" data-k="${k}.det">${esc(det)}</textarea>` : "";
+  return `
+    <div class="q" role="group" aria-labelledby="${fid}">
+      <div class="t" id="${fid}">${esc(q.t)}</div>
+      ${dica}
+      <div class="checks">${opcoes}</div>${campoDet}
+    </div>`;
+}
+
 function campo(s, q) {
   const k = key(s, q);
   const v = st.respostas[k];
@@ -81,6 +99,7 @@ function campo(s, q) {
 
   if (q.tipo === "nota")   return campoNota(q, k, v, fid, dica);
   if (q.tipo === "checks") return campoChecks(q, k, v, fid, dica);
+  if (q.tipo === "simnao") return campoSimNao(q, k, v, fid, dica);
 
   let input;
   if (q.tipo === "textarea") {

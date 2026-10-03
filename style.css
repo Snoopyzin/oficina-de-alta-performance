@@ -781,3 +781,10 @@ a.btn { text-decoration: none; display: inline-block; }
   gap: 14px;
 }
 .login h3, .login p { margin: 0; }
+
+/* Pergunta Sim/Não com detalhe */
+.q .t.det {
+  margin-top: 6px;
+  font-weight: 500;
+  font-size: 14px;
+}
