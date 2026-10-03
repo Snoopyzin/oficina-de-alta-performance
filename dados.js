@@ -111,7 +111,6 @@ const SECOES=[
   {id:"reunioesdiarias",tipo:"textarea",t:"Você realiza reuniões diárias com sua equipe para planejar e organizar as atividades do dia?"},
   {id:"reunioessemanais",tipo:"textarea",t:"Você realiza reuniões semanais com toda a equipe para avaliar a produtividade, o desempenho e os resultados da semana, além de fornecer feedback aos colaboradores?"},
   {id:"reunioesmensais",tipo:"textarea",t:"Você realiza reuniões mensais com a equipe para apresentar os resultados, celebrar as metas alcançadas e motivar os colaboradores para o próximo mês?"},
-  {id:"feedback",tipo:"textarea",t:"Existe avaliação de desempenho ou rotina de feedback?"},
   {id:"dificuldadepessoas",tipo:"textarea",t:"Quando o assunto é gestão de pessoas e equipe, qual é hoje a sua maior dificuldade? E qual cargo ou função você tem mais dificuldade para contratar e encontrar profissionais qualificados para ajudar no crescimento da empresa?"}
  ]},
  {id:"processos",t:"Gestão, processos e indicadores",curto:"Processos",intro:"O que está padronizado, o que é medido e com que frequência a empresa olha para os próprios números.",qs:[
