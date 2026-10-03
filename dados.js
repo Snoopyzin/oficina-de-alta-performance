@@ -107,6 +107,7 @@ const SECOES=[
   {id:"remuneracao",tipo:"textarea",t:"Como é a remuneração?",h:"Salário fixo, comissão por produtividade, bônus por meta, plano de carreira."},
   {id:"turnover",tipo:"textarea",t:"Quantas pessoas saíram nos últimos 12 meses e por quê?"},
   {id:"clima",tipo:"textarea",t:"Como você avalia o clima e o comprometimento da equipe?",h:"Faltas, atrasos, conflitos, iniciativa."},
+  {id:"reunioesdiarias",tipo:"textarea",t:"Você realiza reuniões diárias com sua equipe para planejar e organizar as atividades do dia?"},
   {id:"feedback",tipo:"textarea",t:"Existe avaliação de desempenho ou rotina de feedback?"}
  ]},
  {id:"processos",t:"Gestão, processos e indicadores",curto:"Processos",intro:"O que está padronizado, o que é medido e com que frequência a empresa olha para os próprios números.",qs:[
