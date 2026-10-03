@@ -90,7 +90,8 @@ const SECOES=[
   {id:"pfpj",tipo:"textarea",t:"As contas da pessoa física e da empresa são separadas? Existe pró-labore definido?"},
   {id:"prazos",tipo:"textarea",t:"Quais prazos de pagamento vocês concedem e como está a inadimplência?",h:"Faturamento para frotas em 30/60/90 dias, cheques, boletos em atraso."},
   {id:"dividas",tipo:"textarea",t:"Há empréstimos, financiamentos ou falta de capital de giro?"},
-  {id:"contador",tipo:"textarea",t:"Como é a relação com a contabilidade? Os impostos estão em dia e sob controle?"}
+  {id:"contador",tipo:"textarea",t:"Como é a relação com a contabilidade? Os impostos estão em dia e sob controle?"},
+  {id:"impostos",tipo:"textarea",t:"A empresa possui controle sobre o valor dos impostos pagos mensalmente? Se sim, qual foi a média mensal dos impostos pagos nos últimos 12 meses?"}
  ]},
  {id:"pessoas",t:"Pessoas, equipe e cultura",curto:"Pessoas",intro:"Quem faz a oficina funcionar, como é contratado, treinado, pago e liderado.",qs:[
   NOTA("pessoas e equipe"),
