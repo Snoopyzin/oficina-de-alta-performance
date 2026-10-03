@@ -31,6 +31,7 @@ const SECOES=[
   {id:"visao",tipo:"textarea",t:"Onde você quer que a empresa esteja daqui a 3 a 5 anos?"},
   {id:"metas",tipo:"textarea",t:"A empresa tem metas escritas? Quais são e como você acompanha?"},
   {id:"diferencial",tipo:"textarea",t:"Por que o cliente escolhe você e não o concorrente?"},
+  {id:"melhorar",tipo:"textarea",t:"Na sua percepção, quais são os principais aspectos que a empresa precisa melhorar atualmente? Em quais processos, decisões ou atividades a empresa apresenta maior dependência da sua participação direta?"},
   {id:"dependencia",tipo:"textarea",t:"Quais decisões só você toma hoje? O que trava se você ficar 15 dias fora?"},
   {id:"braco",tipo:"textarea",t:"Você tem um braço direito ou pessoa de confiança? Existe plano de sucessão?"},
   {id:"dor",tipo:"textarea",t:"O que mais tira o seu sono hoje no negócio?"}
