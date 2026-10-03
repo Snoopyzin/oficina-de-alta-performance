@@ -108,6 +108,7 @@ const SECOES=[
   {id:"turnover",tipo:"textarea",t:"Quantas pessoas saíram nos últimos 12 meses e por quê?"},
   {id:"clima",tipo:"textarea",t:"Como você avalia o clima e o comprometimento da equipe?",h:"Faltas, atrasos, conflitos, iniciativa."},
   {id:"reunioesdiarias",tipo:"textarea",t:"Você realiza reuniões diárias com sua equipe para planejar e organizar as atividades do dia?"},
+  {id:"reunioessemanais",tipo:"textarea",t:"Você realiza reuniões semanais com toda a equipe para avaliar a produtividade, o desempenho e os resultados da semana, além de fornecer feedback aos colaboradores?"},
   {id:"feedback",tipo:"textarea",t:"Existe avaliação de desempenho ou rotina de feedback?"}
  ]},
  {id:"processos",t:"Gestão, processos e indicadores",curto:"Processos",intro:"O que está padronizado, o que é medido e com que frequência a empresa olha para os próprios números.",qs:[
