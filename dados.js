@@ -88,6 +88,7 @@ const SECOES=[
   {id:"lucro",tipo:"textarea",t:"Você sabe a margem de lucro líquido? Existe DRE mensal? Quem monta?"},
   {id:"caixa",tipo:"textarea",t:"Como é feito o controle de fluxo de caixa e de contas a pagar e receber?"},
   {id:"pfpj",tipo:"textarea",t:"As contas da pessoa física e da empresa são separadas? Existe pró-labore definido?"},
+  {id:"prolabore",tipo:"textarea",t:"A empresa possui um pró-labore fixo e definido para os sócios? Ou os sócios realizam retiradas de valores conforme a necessidade?"},
   {id:"prazos",tipo:"textarea",t:"Quais prazos de pagamento vocês concedem e como está a inadimplência?",h:"Faturamento para frotas em 30/60/90 dias, cheques, boletos em atraso."},
   {id:"dividas",tipo:"textarea",t:"Há empréstimos, financiamentos ou falta de capital de giro?"},
   {id:"contador",tipo:"textarea",t:"Como é a relação com a contabilidade? Os impostos estão em dia e sob controle?"},
