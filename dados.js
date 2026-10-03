@@ -20,7 +20,7 @@ const SECOES=[
   {id:"regime",tipo:"select",t:"Regime tributário",op:["Simples Nacional","Lucro Presumido","Lucro Real","MEI","Não sei informar"]},
   {id:"funcionarios",tipo:"number",t:"Número total de colaboradores (incluindo sócios que trabalham na operação)"},
   {id:"estrutura",tipo:"textarea",t:"Estrutura física",h:"Área do terreno e do galpão, quantos caminhões cabem ao mesmo tempo, valas, área de lavagem, pátio."},
-  {id:"especialidades",tipo:"checks",t:"Serviços que vocês oferecem",op:["Motor","Injeção eletrônica / bomba","Câmbio e transmissão","Diferencial","Freios e pneumática","Suspensão e direção","Elétrica","Ar-condicionado","Arla / pós-tratamento","Funilaria e pintura","Retífica","Socorro / guincho","Venda de peças balcão","Implementos e carretas","Linha amarela / agrícola"]},
+  {id:"especialidades",tipo:"checks",t:"Serviços que vocês oferecem",op:["Motor","Reparo de Injetores","Câmbio e transmissão","Diferencial","Freios e pneumática","Suspensão e direção","Elétrica","Ar-condicionado","Arla / pós-tratamento","Programação de Módulos (Remap)","Funilaria e pintura","Retífica","Atendimento externo","Venda de peças balcão","Implementos e carretas","Linha amarela / agrícola"]},
   {id:"marcas",tipo:"textarea",t:"Quais marcas e modelos vocês mais atendem?",h:"Ex.: Scania, Volvo, Mercedes-Benz, VW/MAN, Iveco, DAF, máquinas agrícolas ou de construção."},
   {id:"historia",tipo:"textarea",t:"Conte brevemente a história da empresa",h:"Como começou, marcos importantes, momentos difíceis e o que mudou nos últimos anos."},
   {id:"socios",tipo:"textarea",t:"Existem sócios? Como dividem funções e decisões?",h:"Inclua familiares que trabalham na empresa."}
