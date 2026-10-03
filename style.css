@@ -311,6 +311,7 @@ nav.trilho {
 }
 
 .q .h {
+  white-space: pre-line;
   font-size: 13px;
   color: var(--muted);
   margin-top: -4px;

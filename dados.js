@@ -64,7 +64,8 @@ const SECOES=[
   {id:"conferencia",tipo:"textarea",t:"Existe teste de rodagem e conferência final antes da entrega? Quem faz?"},
   {id:"metodo5s",tipo:"textarea",t:"A empresa aplica o método 5S na organização e rotina da oficina? Seus colaboradores conhecem claramente suas responsabilidades, funções e as tarefas que devem ser cumpridas diariamente?"},
   {id:"organizacao",tipo:"textarea",t:"Como está a organização do ambiente?",h:"Limpeza, layout, ferramentaria controlada, ferramentas identificadas, 5S."},
-  {id:"socorro",tipo:"textarea",t:"Vocês fazem atendimento externo ou socorro? Como é cobrado e controlado?"}
+  {id:"socorro",tipo:"textarea",t:"Vocês fazem atendimento externo ou socorro? Como é cobrado e controlado?"},
+  {id:"veiculosexternos",tipo:"textarea",t:"A empresa possui veículos destinados ao atendimento externo ou à prestação de serviços fora da oficina? Como é realizado o controle de utilização, custos e produtividade desses veículos?",h:"Informe, por favor:\n• Quantos veículos são utilizados para atendimento externo;\n• Qual é a finalidade de cada veículo;\n• Qual é o faturamento médio mensal gerado pelos serviços realizados com esses veículos;\n• Qual é o custo médio mensal de cada veículo (combustível, manutenção, pneus, seguros, impostos, depreciação e demais despesas);\n• Se existe algum controle de quilometragem, rotas, horas trabalhadas e serviços realizados."}
  ]},
  {id:"pecas",t:"Peças, estoque e compras",curto:"Peças",intro:"Como as peças são compradas, guardadas e vendidas, e quanto isso pesa no tempo de parada do caminhão.",qs:[
   NOTA("peças e estoque"),
