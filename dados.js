@@ -62,6 +62,7 @@ const SECOES=[
   {id:"tempopadrao",tipo:"textarea",t:"Usam tabela de tempo padrão para cobrar e medir os serviços?"},
   {id:"retrabalho",tipo:"textarea",t:"Com que frequência acontece retrabalho ou garantia? Qual a causa principal e quem paga a conta?"},
   {id:"conferencia",tipo:"textarea",t:"Existe teste de rodagem e conferência final antes da entrega? Quem faz?"},
+  {id:"metodo5s",tipo:"textarea",t:"A empresa aplica o método 5S na organização e rotina da oficina? Seus colaboradores conhecem claramente suas responsabilidades, funções e as tarefas que devem ser cumpridas diariamente?"},
   {id:"organizacao",tipo:"textarea",t:"Como está a organização do ambiente?",h:"Limpeza, layout, ferramentaria controlada, ferramentas identificadas, 5S."},
   {id:"socorro",tipo:"textarea",t:"Vocês fazem atendimento externo ou socorro? Como é cobrado e controlado?"}
  ]},
