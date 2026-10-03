@@ -49,7 +49,8 @@ const SECOES=[
   {id:"vendedor",tipo:"textarea",t:"Existe consultor técnico ou vendedor externo? Tem meta e comissão?"},
   {id:"atividadesconsultor",tipo:"textarea",t:"Por favor, descreva detalhadamente todas as atividades realizadas pelo seu consultor técnico no atendimento ao cliente, desde o primeiro contato até a conclusão do serviço. Inclua também as responsabilidades relacionadas à elaboração de orçamentos, abertura e acompanhamento de ordens de serviço, comunicação com o cliente, acompanhamento da execução dos reparos, aprovação de serviços adicionais, entrega do veículo, pós-venda e demais atividades que fazem parte da rotina dessa função.",h:"Quanto mais detalhada for a sua descrição, melhor poderemos compreender a operação atual e identificar oportunidades de melhoria e estratégias para o seu negócio."},
   {id:"posvenda",tipo:"textarea",t:"O que é feito depois da entrega do caminhão?",h:"Contato de retorno, lembrete de revisão, pesquisa de satisfação."},
-  {id:"marketing",tipo:"textarea",t:"Como está a presença digital e o marketing?",h:"Redes sociais, perfil no Google, site, quanto investe por mês e quem cuida."}
+  {id:"marketing",tipo:"textarea",t:"Como está a presença digital e o marketing?",h:"Redes sociais, perfil no Google, site, quanto investe por mês e quem cuida."},
+  {id:"perfis",tipo:"textarea",t:"Informe os perfis e canais digitais utilizados pela empresa para divulgação e relacionamento com os clientes, como Instagram, TikTok, Google, Facebook, YouTube e outros.",h:"Se possível, informe o @usuário ou o link de cada perfil."}
  ]},
  {id:"oficina",t:"Oficina e produção técnica",curto:"Oficina",intro:"O chão de oficina: fluxo da ordem de serviço, capacidade, diagnóstico, produtividade e qualidade.",qs:[
   NOTA("a oficina e a produção"),
