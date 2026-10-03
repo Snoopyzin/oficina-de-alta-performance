@@ -47,6 +47,7 @@ const SECOES=[
   {id:"conversao",tipo:"textarea",t:"De cada 10 orçamentos, quantos são aprovados? O que acontece com os recusados?"},
   {id:"captacao",tipo:"textarea",t:"Como chegam os clientes novos?",h:"Indicação, Google, Instagram, vendedor externo, movimento da rodovia, parceiros."},
   {id:"vendedor",tipo:"textarea",t:"Existe consultor técnico ou vendedor externo? Tem meta e comissão?"},
+  {id:"atividadesconsultor",tipo:"textarea",t:"Por favor, descreva detalhadamente todas as atividades realizadas pelo seu consultor técnico no atendimento ao cliente, desde o primeiro contato até a conclusão do serviço. Inclua também as responsabilidades relacionadas à elaboração de orçamentos, abertura e acompanhamento de ordens de serviço, comunicação com o cliente, acompanhamento da execução dos reparos, aprovação de serviços adicionais, entrega do veículo, pós-venda e demais atividades que fazem parte da rotina dessa função.",h:"Quanto mais detalhada for a sua descrição, melhor poderemos compreender a operação atual e identificar oportunidades de melhoria e estratégias para o seu negócio."},
   {id:"posvenda",tipo:"textarea",t:"O que é feito depois da entrega do caminhão?",h:"Contato de retorno, lembrete de revisão, pesquisa de satisfação."},
   {id:"marketing",tipo:"textarea",t:"Como está a presença digital e o marketing?",h:"Redes sociais, perfil no Google, site, quanto investe por mês e quem cuida."}
  ]},
