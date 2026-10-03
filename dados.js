@@ -43,6 +43,7 @@ const SECOES=[
   {id:"contratos",tipo:"textarea",t:"Vocês têm contratos de manutenção com frotas? Como funcionam?",h:"Preventiva programada, valor fixo mensal, prazo de atendimento, tabela de preços acordada."},
   {id:"recepcao",tipo:"textarea",t:"Como é feita a recepção do caminhão?",h:"Quem recebe, se há checklist de entrada, fotos, registro de km, relato do motorista."},
   {id:"orcamento",tipo:"textarea",t:"Como funciona o orçamento?",h:"Quem faz, em quanto tempo chega ao cliente e como ele aprova (WhatsApp, e-mail, papel, sistema)."},
+  {id:"checklistentrada",tipo:"textarea",t:"Quando um caminhão entra na sua empresa para a realização de algum serviço, é realizado um checklist completo do veículo para identificar outras necessidades de manutenção, ou a equipe executa apenas o serviço solicitado pelo cliente?"},
   {id:"conversao",tipo:"textarea",t:"De cada 10 orçamentos, quantos são aprovados? O que acontece com os recusados?"},
   {id:"captacao",tipo:"textarea",t:"Como chegam os clientes novos?",h:"Indicação, Google, Instagram, vendedor externo, movimento da rodovia, parceiros."},
   {id:"vendedor",tipo:"textarea",t:"Existe consultor técnico ou vendedor externo? Tem meta e comissão?"},
